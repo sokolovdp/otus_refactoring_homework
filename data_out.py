@@ -3,7 +3,10 @@ from collections import Counter
 TOP_VERBS_AMOUNT = 10
 
 
-def print_results(results: list):
+def print_results(results: list, top_verbs_amount=TOP_VERBS_AMOUNT):
     for result in results:
-        top_verbs = Counter(result.verbs).most_common(TOP_VERBS_AMOUNT)
-        print('\n file=', result.file, 'verbs=', result.verbs, 'top verbs=', top_verbs)
+        if result.verbs:
+            top_verbs = Counter(result.verbs).most_common(top_verbs_amount)
+            print(f'file: {result.file} -> verbs {result.verbs}  top verbs{top_verbs}')
+        else:
+            print(f'file: {result.file} -> no verbs in function names!')

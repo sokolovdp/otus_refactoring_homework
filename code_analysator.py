@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
+import sys
 import chardet
 import asyncio
 import aiofiles
+import argparse
 from concurrent.futures import ALL_COMPLETED
 from collections import namedtuple
 
 from code_parser import PythonCodeParser, PYTHON_FILE_EXTENSIONS
-from data_out import print_results
+from data_out import print_results, TOP_VERBS_AMOUNT
 
 ParseResult = namedtuple('ParseResult', ['file', 'verbs'])
+
+START_FOLDER = os.getcwd()
+MAX_NUMBER_OF_FILES = 100
 
 
 def build_list_of_files(path: str = None, extensions: list = None) -> list:
@@ -28,38 +33,68 @@ async def read_from_file(file_name: str) -> str:
     try:
         async with aiofiles.open(file_name, 'rb') as file:
             raw_data = await file.read()
-        encoding = chardet.detect(raw_data)['encoding']
-        file_data = raw_data.decode(encoding)
-    except IOError:
-        file_data = ''
+        if raw_data:
+            encoding = chardet.detect(raw_data)['encoding']
+            file_data = raw_data.decode(encoding)
+        else:
+            file_data = None
+    except (IOError, Exception):
+        file_data = None
     return file_data
 
 
 async def process_file(file_name: str, parser=None) -> ParseResult:
     file_content = await read_from_file(file_name)
-    return ParseResult(file=file_name, verbs=parser.get_verbs_from_functions_names(file_content))
+    if file_content is not None:
+        result = ParseResult(file=file_name, verbs=parser.get_verbs_from_functions_names(file_content))
+    else:
+        result = ParseResult(file=file_name, verbs=[])
+    return result
 
 
 async def process_all_files(file_list: list, parser=None) -> list:
     futures = [process_file(file, parser) for file in file_list]
     done, pending = await asyncio.wait(futures, return_when=ALL_COMPLETED)
-    analysis_data = [d.result() for d in done]
+    analysis_data = [d.result() for d in done if d.result is not None]
     return analysis_data
 
 
+def check_folder_is_readable(folder_name: str) -> str:
+    if not os.path.isdir(folder_name):
+        raise argparse.ArgumentTypeError("{0} is not a valid path".format(folder_name))
+    if not os.access(folder_name, os.R_OK):
+        raise argparse.ArgumentTypeError("{0} is not a readable dir".format(folder_name))
+    return folder_name
+
+
 if __name__ == '__main__':
+    ap = argparse.ArgumentParser(description='analyses use of verbs in functions names')
+    ap.add_argument(
+        "--dir",
+        dest="folder",
+        action="store",
+        type=check_folder_is_readable,
+        default=START_FOLDER,
+        help="folder with code to analyse"
+    )
+    ap.add_argument(
+        "--top",
+        dest="max_top",
+        type=int,
+        default=TOP_VERBS_AMOUNT,
+        action="store",
+        help="number of top used words, default=5"
+    )
+    args = ap.parse_args(sys.argv[1:])
+    start_folder = args.folder
+    top_verbs_amount = args.max_top
     code_file_extensions = PYTHON_FILE_EXTENSIONS
     code_parser = PythonCodeParser()
-    start_folder = os.getcwd()
-    folders_to_check = ['django', 'flask', ]
-    files_to_analyse = []
-    for folder in folders_to_check:
-        current_path = os.path.join(start_folder, folder)
-        files_to_analyse.extend(build_list_of_files(path=current_path, extensions=code_file_extensions))
+
+    files_to_analyse = build_list_of_files(path=start_folder, extensions=code_file_extensions)[:MAX_NUMBER_OF_FILES]
 
     result_data = asyncio.run(
         process_all_files(files_to_analyse, parser=code_parser)
     )
 
-    print_results(result_data)
-
+    print_results(result_data, top_verbs_amount=top_verbs_amount)
