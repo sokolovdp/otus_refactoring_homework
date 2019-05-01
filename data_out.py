@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from collections import Counter
+
 TOP_VERBS_AMOUNT = 10
 
 
