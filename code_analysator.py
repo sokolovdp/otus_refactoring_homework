@@ -75,7 +75,7 @@ if __name__ == '__main__':
         action="store",
         type=check_folder_is_readable,
         default=START_FOLDER,
-        help="folder with code to analyse"
+        help="folder with code to analyse, default folder is current"
     )
     ap.add_argument(
         "--top",
@@ -83,7 +83,7 @@ if __name__ == '__main__':
         type=int,
         default=TOP_VERBS_AMOUNT,
         action="store",
-        help="number of top used words, default=5"
+        help=f"number of top used words, default={TOP_VERBS_AMOUNT}"
     )
     args = ap.parse_args(sys.argv[1:])
     start_folder = args.folder

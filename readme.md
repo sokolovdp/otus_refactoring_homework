@@ -1,21 +1,25 @@
 # CodeAnalysator
 
-**codea_analysator.py** was done as home work to refactor code which scans folders with Python source code files to check usage  of english verbs in functions names.
-Results of analysis are printed to console. 
+**codea_analysator.py** was done as home work to refactor code which scans folders with Python source code files to check usage  of english verbs in functions names. Results of analysis are printed to console. 
 
 ## Usage
 ```
-usage: codeanalysator.py 
+usage: code_analysator.py [-h] [--dir FOLDER] [--top MAX_TOP]
+
+analyses use of verbs in functions names
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --dir FOLDER   folder with code to analyse
+  --top MAX_TOP  number of top used words, default=10
 ```
 
-## Use as standalone program
-```
-python codeanalysator.py 
-
-```
 ## Sample output to console
 ```
- file= /home/dmitrii/ws/proj/otus_refactoring_homework/django/test.py verbs= ['get', 'get', 'get', 'get', 'get', 'get'] top verbs= [('get', 6)]
+file: ./flask/test.py -> verbs ['get', 'get', 'get', 'get', 'get', 'get']  top verbs[('get', 6)]
+file: ./venv/lib/python3.7/site-packages/nltk/treeprettyprinter.py -> no verbs in function names!
+file: ./venv/lib/python3.7/site-packages/nltk/tbl/rule.py -> verbs ['apply']  top verbs[('apply', 1)]
+ 
 ```
 
 ## Requirements
