@@ -16,15 +16,15 @@ optional arguments:
 
 ## Sample output to console
 ```
-file: ./flask/test.py -> verbs ['get', 'get', 'get', 'get', 'get', 'get']  top verbs[('get', 6)]
-file: ./__init__.py -> no verbs in function names!
-file: ./dclnt.py -> verbs ['get', 'get', 'get', 'get', 'get', 'get']  top verbs[('get', 6)]
-file: ./code_analysator.py -> no verbs in function names!
-file: ./django/test.py -> verbs ['get', 'get', 'get', 'get', 'get', 'get']  top verbs[('get', 6)]
-file: ./data_out.py -> no verbs in function names!
+file: ./flask/test.py -> top verbs: ('get', 6)
 file: ./setup.py -> no verbs in function names!
-file: ./code_parser.py -> verbs ['get']  top verbs[('get', 1)]
- 
+file: ./django/test.py -> top verbs: ('get', 6)
+file: ./data_out.py -> no verbs in function names!
+file: ./__init__.py -> no verbs in function names!
+file: ./dclnt.py -> top verbs: ('get', 6)
+file: ./code_parser.py -> top verbs: ('get', 1)
+file: ./code_analysator.py -> no verbs in function names!
+
 ```
 
 ## Requirements
