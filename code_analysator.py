@@ -21,6 +21,8 @@ INTERNAL_PYTHON_FOLDERS = {
     'venv',
     'bin',
     'lib',
+    'dist',
+    'build',
     '.idea',
     '__pycache__',
     '.git'
