@@ -97,4 +97,4 @@ if __name__ == '__main__':
         process_all_files(files_to_analyse, parser=code_parser)
     )
 
-    print_results(result_data, top_verbs_amount=top_verbs_amount)
+    print_results(result_data, top_verbs_amount=top_verbs_amount, start_folder=start_folder)
