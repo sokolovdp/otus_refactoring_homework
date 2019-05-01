@@ -17,14 +17,24 @@ ParseResult = namedtuple('ParseResult', ['file', 'verbs'])
 START_FOLDER = os.getcwd()
 MAX_NUMBER_OF_FILES = 100
 
+INTERNAL_PYTHON_FOLDERS = {
+    'venv',
+    'bin',
+    'lib',
+    '.idea',
+    '__pycache__',
+    '.git'
+}
+
 
 def build_list_of_files(path: str = None, extensions: list = None) -> list:
     files_in_the_path = []
-    for path, sub_dirs, files in os.walk(path):
+    for root, sub_dirs, files in os.walk(path):
+        sub_dirs[:] = [d for d in sub_dirs if d not in INTERNAL_PYTHON_FOLDERS]
         for file_name in files:
             for extension in extensions:
                 if file_name.endswith(extension):
-                    full_path = os.path.join(path, file_name)
+                    full_path = os.path.join(root, file_name)
                     files_in_the_path.append(full_path)
     return files_in_the_path
 
@@ -61,10 +71,20 @@ async def process_all_files(file_list: list, parser=None) -> list:
 
 def check_folder_is_readable(folder_name: str) -> str:
     if not os.path.isdir(folder_name):
-        raise argparse.ArgumentTypeError("{0} is not a valid path".format(folder_name))
+        raise argparse.ArgumentTypeError(f"{folder_name} is not a valid path")
     if not os.access(folder_name, os.R_OK):
-        raise argparse.ArgumentTypeError("{0} is not a readable dir".format(folder_name))
+        raise argparse.ArgumentTypeError(f"{folder_name} is not a readable dir")
     return folder_name
+
+
+def check_int_range(value: str) -> int:
+    try:
+        int_value = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{value} is not a positive integer")
+    if not 0 < int_value < TOP_VERBS_AMOUNT:
+        raise argparse.ArgumentTypeError(f"{value} must be in range from 1 to {TOP_VERBS_AMOUNT}")
+    return int_value
 
 
 if __name__ == '__main__':
@@ -80,7 +100,7 @@ if __name__ == '__main__':
     ap.add_argument(
         "--top",
         dest="max_top",
-        type=int,
+        type=check_int_range,
         default=TOP_VERBS_AMOUNT,
         action="store",
         help=f"number of top used words, default={TOP_VERBS_AMOUNT}"
