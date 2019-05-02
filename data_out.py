@@ -18,5 +18,6 @@ def print_results(
                 print(f'file: {file_name} -> top verbs: {", ".join(top_verbs)}')
             else:
                 print(f'file: {file_name} -> no verbs in function names!')
+        print(f'--- processed {len(results)} files ---')
     else:
         raise NotImplementedError('Only "console" output is allowed!')

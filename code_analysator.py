@@ -7,6 +7,10 @@ import argparse
 from code_parser import start_parsing, PYTHON_FILES
 from data_out import print_results, TOP_VERBS_AMOUNT
 
+allowed_file_extensions = {
+    'python': PYTHON_FILES
+}
+
 
 def check_folder_is_readable(folder_name: str) -> str:
     if not os.path.isdir(folder_name):
@@ -52,16 +56,14 @@ if __name__ == '__main__':
     )
     ap.add_argument(
         "--type",
-        dest="file_types",
+        dest="file_type",
         type=check_type_value,
         default='python',
         action="store",
         help=f"code file types, default='python'"
     )
     args = ap.parse_args(sys.argv[1:])
-    start_folder = args.folder
-    top_verbs_amount = args.max_top
 
-    result_data = start_parsing(start_folder, file_extensions=PYTHON_FILES)
+    result_data = start_parsing(args.folder, file_extensions=allowed_file_extensions[args.file_type])
 
-    print_results(results=result_data, top_verbs_amount=top_verbs_amount, start_folder=start_folder)
+    print_results(results=result_data, top_verbs_amount=args.max_top, start_folder=args.folder)

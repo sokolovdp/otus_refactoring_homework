@@ -1,6 +1,6 @@
 # CodeAnalysator
 
-**codea_analysator.py** was done as Otus course homework to refactor given code which scans folders with Python source code files to check usage of english verbs in functions names. Results of analysis are printed to console. 
+**codea_analysator.py** was done as Otus course homework to refactor given code which scans folders with Python source code files to check usage of english verbs in functions names. Results of analysis are printed to console. Maximum number of files which can be processed is limited by 200. 
 
 ## Usage
 ```
@@ -23,7 +23,8 @@ file: ./inac_api/flask_app/helpers/stubs/iptv/iptv_calc_pkg.py -> top verbs: ('g
 file: ./inac_api/flask_app/apps/fttb_mobile/common.py -> top verbs: ('get', 6), ('save', 1)
 file: ./inac_api/flask_app/helpers/tv/iptv.py -> top verbs: ('get', 3)
 file: ./inac_api/flask_app/apps/fttb_mobile/base_schemas.py -> no verbs in function names!
-
+...
+--- processed 200 files ---
 ```
 
 ## Requirements
