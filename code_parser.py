@@ -44,7 +44,7 @@ INTERNAL_PYTHON_FOLDERS = {
     '__pycache__',
     '.git'
 }
-MAX_NUMBER_OF_FILES = 100
+MAX_NUMBER_OF_FILES = 200
 
 
 def build_list_of_files(path: str = None, extensions: tuple = None, excludes: set = None) -> list:
@@ -54,8 +54,11 @@ def build_list_of_files(path: str = None, extensions: tuple = None, excludes: se
         for file_name in files:
             for extension in extensions:
                 if file_name.endswith(extension):
-                    full_path = os.path.join(root, file_name)
-                    files_in_the_path.append(full_path)
+                    full_path_file_name = os.path.join(root, file_name)
+                    files_in_the_path.append(full_path_file_name)
+        if len(files_in_the_path) > MAX_NUMBER_OF_FILES:
+            files_in_the_path = files_in_the_path[:MAX_NUMBER_OF_FILES]
+            break
     return files_in_the_path
 
 
