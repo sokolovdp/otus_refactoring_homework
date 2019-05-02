@@ -4,14 +4,16 @@
 
 ## Usage
 ```
-usage: code_analysator.py [-h] [--dir FOLDER] [--top MAX_TOP]
+usage: code_analysator.py [-h] [--dir FOLDER] [--top MAX_TOP] [--type FILE_TYPES]
 
 analyses use of verbs in functions names
 
 optional arguments:
-  -h, --help     show this help message and exit
-  --dir FOLDER   folder with code to analyse
-  --top MAX_TOP  number of top used words, default=10
+  -h, --help         show this help message and exit
+  --dir FOLDER       folder with code to analyse, default folder is current
+  --top MAX_TOP      number of top used words, default=10
+  --type FILE_TYPES  code file types, default='python'
+
 ```
 
 ## Sample output to console

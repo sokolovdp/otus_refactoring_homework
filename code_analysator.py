@@ -16,7 +16,7 @@ def check_folder_is_readable(folder_name: str) -> str:
     return folder_name
 
 
-def check_int_range(value: str) -> int:
+def check_top_range(value: str) -> int:
     try:
         int_value = int(value)
     except ValueError:
@@ -24,6 +24,12 @@ def check_int_range(value: str) -> int:
     if not 0 < int_value < TOP_VERBS_AMOUNT:
         raise argparse.ArgumentTypeError(f"{value} must be in range from 1 to {TOP_VERBS_AMOUNT}")
     return int_value
+
+
+def check_type_value(file_type: str) -> str:
+    if file_type != 'python':
+        raise argparse.ArgumentTypeError(f"Only python files parsing is implemented")
+    return file_type
 
 
 if __name__ == '__main__':
@@ -39,10 +45,18 @@ if __name__ == '__main__':
     ap.add_argument(
         "--top",
         dest="max_top",
-        type=check_int_range,
+        type=check_top_range,
         default=TOP_VERBS_AMOUNT,
         action="store",
         help=f"number of top used words, default={TOP_VERBS_AMOUNT}"
+    )
+    ap.add_argument(
+        "--type",
+        dest="file_types",
+        type=check_type_value,
+        default='python',
+        action="store",
+        help=f"code file types, default='python'"
     )
     args = ap.parse_args(sys.argv[1:])
     start_folder = args.folder
