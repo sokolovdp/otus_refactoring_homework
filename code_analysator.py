@@ -31,8 +31,9 @@ def check_top_range(value: str) -> int:
 
 
 def check_type_value(file_type: str) -> str:
-    if file_type != 'python':
-        raise argparse.ArgumentTypeError(f"Only python files parsing is implemented")
+    allowed_types = allowed_file_extensions.keys()
+    if file_type not in allowed_types:
+        raise argparse.ArgumentTypeError(f"Only {','.join(allowed_types)} file types parsing is implemented")
     return file_type
 
 
