@@ -13,7 +13,7 @@ ParseResult = namedtuple('ParseResult', ['file', 'verbs'])
 
 PYTHON_FILES = ('.py',)
 PYTHON_INTERNAL_NAMES = {
-    'BeautifulSoup', 'sys', 'os', 're', 'kwargs', 'args', 'argparse', 'self',
+    'sys', 'os', 're', 'kwargs', 'args', 'argparse', 'self',
     'ArithmeticError', 'AssertionError', 'AttributeError', 'BaseException', 'BlockingIOError',
     'BrokenPipeError', 'BufferError', 'BytesWarning', 'ChildProcessError', 'ConnectionAbortedError',
     'ConnectionError', 'ConnectionRefusedError', 'ConnectionResetError', 'DeprecationWarning', 'EOFError',
