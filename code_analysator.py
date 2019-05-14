@@ -3,13 +3,17 @@
 import os
 import sys
 import argparse
+import re
+import subprocess
+from typing import Iterable
 
 from code_parser import start_parsing, PYTHON_FILES
-from data_out import print_results, TOP_VERBS_AMOUNT
+from data_out import print_results, TOP_VERBS_AMOUNT, VALID_OUTPUT_TYPES
 
 allowed_file_extensions = {
     'python': PYTHON_FILES
 }
+VALID_GITHUB_REPO_URL = r'^\/(gist\.)?github\.com\/[\w\-]+\/(?P<repo>[\w\-]+)'
 
 
 def check_folder_is_readable(folder_name: str) -> str:
@@ -37,9 +41,34 @@ def check_type_value(file_type: str) -> str:
     return file_type
 
 
+def check_github_url_validity(github_url: str) -> str:
+    match = re.match(VALID_GITHUB_REPO_URL, github_url)
+    if not match:
+        raise argparse.ArgumentTypeError("{}, is not a valid GitHub repo url".format(github_url))
+    return github_url
+
+
+def check_arg_range(value: str, valid_range: Iterable) -> str:
+    if not value.lower() in valid_range:
+        raise argparse.ArgumentTypeError(f"wrong value {value}, valid values are: {','.join(valid_range)}")
+    return value.lower()
+
+
+def check_out_range(out_type: str):
+    return check_arg_range(out_type, VALID_OUTPUT_TYPES)
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description='analyses use of verbs in functions names')
-    ap.add_argument(
+    source = ap.add_mutually_exclusive_group(required=True)  # source can be: local folder or github repo
+    source.add_argument(
+        "--repo",
+        dest="repo",
+        action="store",
+        type=check_github_url_validity,
+        help="github (or gist) repo URL to clone and analyse"
+    )
+    source.add_argument(
         "--dir",
         dest="folder",
         action="store",
@@ -63,8 +92,25 @@ if __name__ == '__main__':
         action="store",
         help=f"code file types, default='python'"
     )
+    ap.add_argument(
+        '--out',
+        dest='out_type',
+        type=check_out_range,
+        action='store',
+        default='con',
+        help="out results to JSON file, CSV file, or CONsole"
+    )
     args = ap.parse_args(sys.argv[1:])
+    if args.repo:
+        match = re.match(VALID_GITHUB_REPO_URL, args.repo)
+        folder = match.group('repo')
+        full_git_url = f'git:/{args.repo}.git'
+        error = subprocess.call(['git', 'clone', full_git_url])
+        if error:
+            raise argparse.ArgumentTypeError(f"error {error} while cloning repo: {full_git_url}")
+    else:
+        folder = args.folder
 
-    result_data = start_parsing(args.folder, file_extensions=allowed_file_extensions[args.file_type])
+    result_data = start_parsing(folder, file_extensions=allowed_file_extensions[args.file_type])
 
-    print_results(results=result_data, top_verbs_amount=args.max_top, start_folder=args.folder)
+    print_results(results=result_data, top_verbs_amount=args.max_top, start_folder=folder, output=args.out_type)
