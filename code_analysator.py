@@ -98,7 +98,7 @@ if __name__ == '__main__':
         type=check_out_range,
         action='store',
         default='con',
-        help="out results to JSON file, CSV file, or CONsole"
+        help='out results to JSON file or CONsole'
     )
     args = ap.parse_args(sys.argv[1:])
     if args.repo:
@@ -107,7 +107,7 @@ if __name__ == '__main__':
         full_git_url = f'git:/{args.repo}.git'
         error = subprocess.call(['git', 'clone', full_git_url])
         if error:
-            raise argparse.ArgumentTypeError(f"error {error} while cloning repo: {full_git_url}")
+            raise argparse.ArgumentTypeError(f'error {error} while cloning repo: {full_git_url}')
     else:
         folder = args.folder
 
