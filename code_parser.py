@@ -5,10 +5,9 @@ import aiofiles
 import chardet
 import asyncio
 from abc import ABC, abstractmethod
-
-from collections import namedtuple
 from nltk import pos_tag
 from concurrent.futures import ALL_COMPLETED
+from collections import namedtuple
 
 ParseResult = namedtuple('ParseResult', ['file', 'verbs'])
 
