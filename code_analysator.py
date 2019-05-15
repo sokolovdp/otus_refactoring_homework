@@ -7,11 +7,12 @@ import re
 import subprocess
 from typing import Iterable
 
-from code_parser import start_parsing, PYTHON_FILES
+from code_parser import start_parsing, PYTHON_FILES, JAVA_FILES
 from data_out import print_results, TOP_VERBS_AMOUNT, VALID_OUTPUT_TYPES
 
 allowed_file_extensions = {
-    'python': PYTHON_FILES
+    'python': PYTHON_FILES,
+    'java': JAVA_FILES,
 }
 VALID_GITHUB_REPO_URL = r'^\/(gist\.)?github\.com\/[\w\-]+\/(?P<repo>[\w\-]+)'
 
@@ -42,8 +43,8 @@ def check_type_value(file_type: str) -> str:
 
 
 def check_github_url_validity(github_url: str) -> str:
-    match = re.match(VALID_GITHUB_REPO_URL, github_url)
-    if not match:
+    url_match = re.match(VALID_GITHUB_REPO_URL, github_url)
+    if not url_match:
         raise argparse.ArgumentTypeError("{}, is not a valid GitHub repo url".format(github_url))
     return github_url
 

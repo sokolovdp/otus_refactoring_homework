@@ -4,6 +4,7 @@ import ast
 import aiofiles
 import chardet
 import asyncio
+from abc import ABC, abstractmethod
 
 from collections import namedtuple
 from nltk import pos_tag
@@ -44,7 +45,18 @@ INTERNAL_PYTHON_FOLDERS = {
     '__pycache__',
     '.git'
 }
+
+JAVA_FILES = ('.java',)
+JAVA_INTERNAL_NAMES = {}
+INTERNAL_JAVA_FOLDERS = {}
+
 MAX_NUMBER_OF_FILES = 200
+
+
+class BaseCodeParser(ABC):
+    @abstractmethod
+    def get_words_from_source_code(self, source_code: str) -> list:
+        pass
 
 
 def build_list_of_files(path: str = None, extensions: tuple = None, excludes: set = None) -> list:
@@ -79,7 +91,7 @@ async def read_from_file(file_name: str) -> str:
 async def process_file(file_name: str, parser=None) -> ParseResult:
     file_content = await read_from_file(file_name)
     if file_content is not None:
-        result = ParseResult(file=file_name, verbs=parser.get_verbs_from_functions_names(file_content))
+        result = ParseResult(file=file_name, verbs=parser.get_words_from_source_code(file_content))
     else:
         result = ParseResult(file=file_name, verbs=[])
     return result
@@ -99,11 +111,10 @@ def is_verb(word: str) -> bool:
     return pos_info[0][1] == 'VB'
 
 
-class PythonCodeParser:
+class PythonCodeParser(BaseCodeParser):
     def __init__(self):
         self.code_tree = None
         self.verbs = None
-        super().__init__()
 
     @staticmethod
     def dunder(name: str) -> bool:
@@ -112,7 +123,7 @@ class PythonCodeParser:
     def proper_name(self, name: str) -> bool:
         return name not in PYTHON_INTERNAL_NAMES and len(name) > 1 and not self.dunder(name)
 
-    def get_verbs_from_functions_names(self, source_code: str) -> list:
+    def get_words_from_source_code(self, source_code: str) -> list:
         self.code_tree = ast.parse(source_code)
         self.verbs = []
         for node in ast.walk(self.code_tree):
@@ -124,10 +135,22 @@ class PythonCodeParser:
         return self.verbs
 
 
+class JavaCodeParser(BaseCodeParser):
+    def __init__(self):
+        self.code_tree = None
+        self.verbs = None
+
+    def get_words_from_source_code(self, source_code: str) -> list:
+        return []
+
+
 def start_parsing(start_folder, file_extensions: tuple = PYTHON_FILES) -> list:
     if file_extensions is PYTHON_FILES:
-        excludes = INTERNAL_PYTHON_FOLDERS
         code_parser = PythonCodeParser()
+        excludes = PYTHON_INTERNAL_NAMES
+    elif file_extensions is JAVA_FILES:
+        code_parser = JavaCodeParser()
+        excludes = JAVA_INTERNAL_NAMES
     else:
         raise NotImplementedError(f"Can't parse files with {file_extensions} extensions")
 
