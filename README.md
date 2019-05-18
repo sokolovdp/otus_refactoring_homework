@@ -14,7 +14,7 @@ optional arguments:
   --repo REPO       github (or gist) repo URL to clone and analyse
   --dir FOLDER      folder with code to analyse, default folder is current
   --top MAX_TOP     number of top used words, default=10
-  --type FILE_TYPE  code file types, default=python
+  --type FILE_TYPE  code file types: .py .java default=.py
   --out OUT_TYPE    where to write analysis results, options are: csv_file,
                     console default=console
 
