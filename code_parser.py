@@ -46,8 +46,8 @@ INTERNAL_PYTHON_FOLDERS = {
 }
 
 JAVA_FILES = ('.java',)
-JAVA_INTERNAL_NAMES = {}
-INTERNAL_JAVA_FOLDERS = {}
+JAVA_INTERNAL_NAMES = set()
+INTERNAL_JAVA_FOLDERS = set()
 
 MAX_NUMBER_OF_FILES = 200
 
@@ -127,10 +127,10 @@ class PythonCodeParser(BaseCodeParser):
         self.code_tree = ast.parse(source_code)
         self.verbs = []
         for node in ast.walk(self.code_tree):
-            if isinstance(node, ast.FunctionDef):
-                new_func_name = node.name.lower()
-                if self.proper_name(new_func_name):
-                    verbs = [word for word in new_func_name.split('_') if is_verb(word)]
+            if isinstance(node, ast.FunctionDef) or isinstance(node, ast.Name):
+                new_name = node.name.lower()
+                if self.proper_name(new_name):
+                    verbs = [word for word in new_name.split('_') if is_verb(word)]
                     self.verbs.extend(verbs)
         return self.verbs
 
@@ -144,15 +144,20 @@ class JavaCodeParser(BaseCodeParser):
         return []
 
 
+parsers_table = {
+    PYTHON_FILES: PythonCodeParser,
+    JAVA_FILES: JavaCodeParser,
+}
+
+excludes_table = {
+    PYTHON_FILES: INTERNAL_PYTHON_FOLDERS,
+    JAVA_FILES: INTERNAL_JAVA_FOLDERS,
+}
+
+
 def start_parsing(start_folder, file_extensions: tuple = PYTHON_FILES) -> list:
-    if file_extensions is PYTHON_FILES:
-        code_parser = PythonCodeParser()
-        excludes = PYTHON_INTERNAL_NAMES
-    elif file_extensions is JAVA_FILES:
-        code_parser = JavaCodeParser()
-        excludes = JAVA_INTERNAL_NAMES
-    else:
-        raise NotImplementedError(f"Can't parse files with {file_extensions} extensions")
+    code_parser = parsers_table[file_extensions]
+    excludes = excludes_table[file_extensions]
 
     files_to_analyse = build_list_of_files(
         path=start_folder,
@@ -162,4 +167,5 @@ def start_parsing(start_folder, file_extensions: tuple = PYTHON_FILES) -> list:
     result_list = asyncio.run(
         process_all_files(files_to_analyse, parser=code_parser)
     )
+
     return result_list
