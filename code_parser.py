@@ -107,7 +107,8 @@ def is_verb(word: str) -> bool:
     if not word or len(word) < 2:
         return False
     pos_info = pos_tag([word])
-    return pos_info[0][1] == 'VB'
+    check_code = pos_info[0][1]
+    return check_code in ('VB', 'VBP')
 
 
 class PythonCodeParser(BaseCodeParser):
