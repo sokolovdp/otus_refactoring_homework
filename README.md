@@ -4,15 +4,19 @@
 
 ## Usage
 ```
-usage: code_analysator.py [-h] [--dir FOLDER] [--top MAX_TOP] [--type FILE_TYPES]
+usage: code_analysator.py [-h] (--repo REPO | --dir FOLDER) [--top MAX_TOP]
+                          [--type FILE_TYPE] [--out OUT_TYPE]
 
 analyses use of verbs in functions names
 
 optional arguments:
-  -h, --help         show this help message and exit
-  --dir FOLDER       folder with code to analyse, default folder is current
-  --top MAX_TOP      number of top used words, default=10
-  --type FILE_TYPES  code file types, default='python'
+  -h, --help        show this help message and exit
+  --repo REPO       github (or gist) repo URL to clone and analyse
+  --dir FOLDER      folder with code to analyse, default folder is current
+  --top MAX_TOP     number of top used words, default=10
+  --type FILE_TYPE  code file types, default=python
+  --out OUT_TYPE    where to write analysis results, options are: csv_file,
+                    console default=console
 
 ```
 

@@ -45,13 +45,15 @@ def check_type_value(file_type: str) -> str:
 def check_github_url_validity(github_url: str) -> str:
     url_match = re.match(VALID_GITHUB_REPO_URL, github_url)
     if not url_match:
-        raise argparse.ArgumentTypeError("{}, is not a valid GitHub repo url".format(github_url))
+        raise argparse.ArgumentTypeError(f"{github_url}, is not a valid GitHub repo url")
     return github_url
 
 
 def check_arg_range(value: str, valid_range: Iterable) -> str:
     if not value.lower() in valid_range:
-        raise argparse.ArgumentTypeError(f"wrong value {value}, valid values are: {','.join(valid_range)}")
+        raise argparse.ArgumentTypeError(
+            f"wrong value {value}, valid values are: {','.join(valid_range)}  default=console"
+        )
     return value.lower()
 
 
@@ -91,7 +93,7 @@ if __name__ == '__main__':
         type=check_type_value,
         default='python',
         action="store",
-        help=f"code file types, default='python'"
+        help=f"code file types, default=python"
     )
     ap.add_argument(
         '--out',
@@ -99,7 +101,7 @@ if __name__ == '__main__':
         type=check_out_range,
         action='store',
         default='con',
-        help='out results to JSON file or CONsole'
+        help=f'where to write analysis results, options are: {", ".join(VALID_OUTPUT_TYPES)} default=console'
     )
     args = ap.parse_args(sys.argv[1:])
     if args.repo:

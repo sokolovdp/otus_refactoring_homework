@@ -6,7 +6,7 @@ import code_parser
 
 Results = List[code_parser.ParseResult]
 TOP_VERBS_AMOUNT = 10
-VALID_OUTPUT_TYPES = ['csv', 'con']
+VALID_OUTPUT_TYPES = ['csv_file', 'console']
 CSV_FILE = "code_analyse_result.csv"
 
 
