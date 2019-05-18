@@ -31,6 +31,14 @@ file: ./inac_api/flask_app/apps/fttb_mobile/base_schemas.py -> no verbs in funct
 --- processed 200 files ---
 ```
 
+## Sample output to csv file code_analyse_result.csv
+```
+./habra_proxy.py,('get' 33),('do' 2)
+...
+
+```
+
+
 ## Requirements
 ```
 python>=3.7.3
