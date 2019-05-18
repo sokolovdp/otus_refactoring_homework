@@ -114,4 +114,4 @@ if __name__ == '__main__':
 
     result_data = start_parsing(folder, file_extensions=allowed_file_extensions[args.file_type])
 
-    print_results(results=result_data, top_verbs_amount=args.max_top, start_folder=folder, output=args.out_type)
+    print_results(results=result_data, start_folder=folder, output=args.out_type)

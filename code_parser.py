@@ -90,7 +90,8 @@ async def read_from_file(file_name: str) -> str:
 async def process_file(file_name: str, parser=None) -> ParseResult:
     file_content = await read_from_file(file_name)
     if file_content is not None:
-        result = ParseResult(file=file_name, verbs=parser.get_words_from_source_code(file_content))
+        verbs = parser.get_words_from_source_code(file_content)
+        result = ParseResult(file=file_name, verbs=verbs)
     else:
         result = ParseResult(file=file_name, verbs=[])
     return result
@@ -127,11 +128,15 @@ class PythonCodeParser(BaseCodeParser):
         self.code_tree = ast.parse(source_code)
         self.verbs = []
         for node in ast.walk(self.code_tree):
-            if isinstance(node, ast.FunctionDef) or isinstance(node, ast.Name):
+            if isinstance(node, ast.FunctionDef):
                 new_name = node.name.lower()
-                if self.proper_name(new_name):
-                    verbs = [word for word in new_name.split('_') if is_verb(word)]
-                    self.verbs.extend(verbs)
+            elif isinstance(node, ast.Name):
+                new_name = node.id.lower()
+            else:
+                continue
+            if self.proper_name(new_name):
+                verbs = [word for word in new_name.split('_') if is_verb(word)]
+                self.verbs.extend(verbs)
         return self.verbs
 
 
@@ -145,8 +150,8 @@ class JavaCodeParser(BaseCodeParser):
 
 
 parsers_table = {
-    PYTHON_FILES: PythonCodeParser,
-    JAVA_FILES: JavaCodeParser,
+    PYTHON_FILES: PythonCodeParser(),
+    JAVA_FILES: JavaCodeParser(),
 }
 
 excludes_table = {
