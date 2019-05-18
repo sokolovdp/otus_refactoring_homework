@@ -93,7 +93,7 @@ if __name__ == '__main__':
         type=check_type_value,
         default='python',
         action="store",
-        help=f"code file types, default=python"
+        help=f"code file types: {','.join(PYTHON_FILES)} {','.join(JAVA_FILES)} default=.py"
     )
     ap.add_argument(
         '--out',
