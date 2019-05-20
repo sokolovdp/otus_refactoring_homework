@@ -1,6 +1,6 @@
 # CodeAnalysator
 
-**codea_analysator.py** was done as Otus course homework to refactor given code which scans folders with Python source code files to check usage of english verbs in functions names. Results of analysis are printed to console. Maximum number of files which can be processed is limited by 200. 
+**codea_analysator.py** was done as Otus course homework to refactor given code which scans folders or GitHub repo with Python source code files to check usage of english verbs in functions names. Results of analysis are printed to console or .csv file . Maximum number of files which can be processed is limited by 200. 
 
 ## Usage
 ```
